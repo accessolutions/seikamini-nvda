@@ -9,17 +9,26 @@
 # see www.seika-braille.com for more details
 # 09.06.2012
 # Dec14/Jan15 add BrilleInput
+# 2019-04-23 (Accessolutions):
+#  - Repackaging as an NVDA add-on.
+#  - Amend driver description to mention newer models
 
 from ctypes import *
+import os
 import time
 import wx
+
+import addonHandler
 import braille
 import brailleInput
 import inputCore
 import hwPortUtils
-import winUser 
-import os
 from logHandler import log
+import winUser 
+
+
+addonHandler.initTranslation()
+
 
 READ_INTERVAL = 50
 
@@ -80,7 +89,8 @@ os.chdir(WORK_PATH)
 
 class BrailleDisplayDriver(braille.BrailleDisplayDriver):
 	name = "seikamini"
-	description = "Seika Mini Notetaker"
+	# Translators: The name of a series of braille displays.
+	description = _("Seika notetakers (Mini16, Mini24, V6 and V7)")
 
 	numCells = 0
 	# numBtns = 0
