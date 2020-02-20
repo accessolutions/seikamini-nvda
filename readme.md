@@ -4,11 +4,15 @@
  - Copyright (C) 2019 Accessolutions <contact@accessolutions.fr>
 
 ## Release Dates
+ - Seika notetakers driver NVDA add-on v3.2.2019.3.1 - February 20, 2020
  - Seika notetakers driver NVDA add-on v3.2.2019.1.1 - April 23, 2019
  - Seika Patch for NVDA v3.2 - July 10, 2017
  - Seika Patch for NVDA v3.1 - July 6, 2017
  - Seika Patch for NVDA v3.0 - June 12, 2017
  - Seika Patch for NVDA v2.0 - April 23, 2017
+
+## Version 3.2.2019.3.1
+Python 3 compatibility
 
 ## Version 3.2.2019.1.1
 Repackaging by Accessolutions as an NVDA add-on.

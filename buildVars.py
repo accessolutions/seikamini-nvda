@@ -20,7 +20,7 @@ addon_info = {
 	"addon_description" : _("""Repackaging by Accessolutions of the driver
 provided by the manufacturer as an NVDA add-on."""),
 	# version
-	"addon_version" : "3.2.2019.1.1",
+	"addon_version" : "3.2.2019.3.1",
 	# Author(s)
 	"addon_author" : (
 		u"Accessolutions <contact@accessolutions.fr>, "
@@ -34,7 +34,7 @@ provided by the manufacturer as an NVDA add-on."""),
 	# Minimum NVDA version supported (e.g. "2018.3.0")
 	"addon_minimumNVDAVersion" : "2012.2",
 	# Last NVDA version supported/tested (e.g. "2018.4.0", ideally more recent than minimum version)
-	"addon_lastTestedNVDAVersion" : "2019.1.1",
+	"addon_lastTestedNVDAVersion" : "2019.3.1",
 	# Add-on update channel (default is stable or None)
 	"addon_updateChannel" : None,
 }

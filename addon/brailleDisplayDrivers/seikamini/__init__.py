@@ -12,6 +12,8 @@
 # 2019-04-23 (Accessolutions):
 #  - Repackaging as an NVDA add-on.
 #  - Amend driver description to mention newer models
+# 2020-02-20 (Accessolutions):
+#  - Python 3 compatibility
 
 from ctypes import *
 import os
@@ -25,6 +27,20 @@ import inputCore
 import hwPortUtils
 from logHandler import log
 import winUser 
+
+
+try:
+	from six.moves import xrange
+except ImportError:
+	# NVDA version < 2018.3
+	pass
+
+
+try:
+	from addonAPIVersion import CURRENT as ADDON_API_VERSION
+except ImportError:
+	# NVDA version < 2019.1
+	ADDON_API_VERSION = (0, 0, 0)
 
 
 addonHandler.initTranslation()
@@ -120,8 +136,10 @@ class BrailleDisplayDriver(braille.BrailleDisplayDriver):
 
 		# seikaDll.UpdateBrailleDisplay.errcheck=self.seika_errcheck
 		seikaDll.UpdateBrailleDisplay.restype=c_int
-		seikaDll.UpdateBrailleDisplay.argtype=(c_char_p,c_int)
-
+		if ADDON_API_VERSION >= (2019, 3):
+			seikaDll.UpdateBrailleDisplay.argtype = (POINTER(c_ubyte), c_int)
+		else:
+			seikaDll.UpdateBrailleDisplay.argtype = (c_char_p, c_int)
 		# seikaDll.GetBrailleKey.errcheck=self.seika_errcheck
 		seikaDll.GetBrailleKey.restype=c_int
 		seikaDll.GetBrailleKey.argtype=(c_void_p,c_void_p)
@@ -151,7 +169,7 @@ class BrailleDisplayDriver(braille.BrailleDisplayDriver):
 					pN = port.split("COM")[1]
 				except IndexError:
 					pN = "0"
-	        		portNum = int(pN)
+				portNum = int(pN, 10)
 				log.info("seikamini test {c}, {b}".format(c=port, b=bName))
 		
 				if seikaDll.BrailleOpen(0,portNum):
@@ -174,11 +192,16 @@ class BrailleDisplayDriver(braille.BrailleDisplayDriver):
 			seikaDll.BrailleClose()
 
 	def display(self, cells):
-		# every transmitted line consists of the preamble SEIKA_SENDHEADER and the Cells
-		line = "".join(chr(cell) for cell in cells)
-		expectedLength = self.numCells
-		line += chr(0) * (expectedLength - len(line))
-		seikaDll.UpdateBrailleDisplay(line,self.numCells)
+		if ADDON_API_VERSION >= (2019, 3):
+			# cells will already be padded up to numCells.
+			cellBytes = bytes(cells)
+			seikaDll.UpdateBrailleDisplay(cellBytes,self.numCells)
+		else:
+			# every transmitted line consists of the preamble SEIKA_SENDHEADER and the Cells
+			line = "".join(chr(cell) for cell in cells)
+			expectedLength = self.numCells
+			line += chr(0) * (expectedLength - len(line))
+			seikaDll.UpdateBrailleDisplay(line,self.numCells)
 
 	def handleResponses(self):
 		pint = c_int * 1
@@ -209,7 +232,7 @@ class BrailleDisplayDriver(braille.BrailleDisplayDriver):
 			if Key: # Mini Seika has no Btn ....
 				gesture = InputGesture(keys=Key)
 			if Btn: # Mini Seika has no Btn ....
-       				gesture = InputGesture(keys=Btn)
+	   				gesture = InputGesture(keys=Btn)
 			if Brl: # or how to handle Brailleinput?
 				gesture = InputGesture(dots=Brl)
 			if Key or Btn or Brl:
